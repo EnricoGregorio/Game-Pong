@@ -25,7 +25,7 @@ public class Enemy {
 	}
 	
 	public void render(Graphics g) {
-		g.setColor(Color.DARK_GRAY);
+		g.setColor(new Color (150, 0, 150));
 		g.fillRect((int)x, (int)y, width, height);
 	}
 }

@@ -29,7 +29,7 @@ public class Player {
     }
 
     public void render(Graphics g){
-        g.setColor(Color.GRAY);
+        g.setColor(Color.GREEN);
         g.fillRect(x, y, width, height);
     }
 }

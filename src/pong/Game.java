@@ -1,4 +1,5 @@
 package pong;
+
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -25,32 +26,32 @@ public class Game extends Canvas implements Runnable, KeyListener {
     public static Enemy enemy;
     public static Ball ball;
 
-    public Game(){
-        this.setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
+    public Game() {
+        this.setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
         this.addKeyListener(this);
         player = new Player(100, HEIGHT - 10);
         enemy = new Enemy(100, 0);
         ball = new Ball(100, HEIGHT / 2 - 1);
     }
 
-    public synchronized void start(){
+    public synchronized void start() {
         thread = new Thread(this);
         isRunning = true;
         thread.start();
     }
 
-    public synchronized void stop(){
+    public synchronized void stop() {
         isRunning = false;
-        try{
+        try {
             thread.join();
-        }catch (InterruptedException e){
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
         Game game = new Game();
-        
+
         frame = new JFrame("Pong");
         frame.add(game);
         frame.setResizable(false);
@@ -61,15 +62,15 @@ public class Game extends Canvas implements Runnable, KeyListener {
         game.start();
     }
 
-    public void tick(){
-    	player.tick();
+    public void tick() {
+        player.tick();
         enemy.tick();
         ball.tick();
     }
 
-    public void render(){
+    public void render() {
         BufferStrategy bs = this.getBufferStrategy();
-        if(bs == null){
+        if (bs == null) {
             this.createBufferStrategy(3);
             return;
         }
@@ -83,7 +84,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
         g.dispose();
         g = bs.getDrawGraphics();
-        g.drawImage(layer, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
+        g.drawImage(layer, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
         bs.show();
     }
 
@@ -94,18 +95,18 @@ public class Game extends Canvas implements Runnable, KeyListener {
         double delta = 0;
         double frames = 0;
         double timer = System.currentTimeMillis();
-        while(isRunning){
+        while (isRunning) {
             requestFocus();
             long now = System.nanoTime();
             delta += (now - lastTime) / ns;
             lastTime = now;
-            if(delta >= 1){
+            if (delta >= 1) {
                 tick();
                 render();
                 frames++;
                 delta--;
             }
-            if(System.currentTimeMillis() - timer >= 1000){
+            if (System.currentTimeMillis() - timer >= 1000) {
                 System.out.println("FPS: " + frames);
                 frames = 0;
                 timer += 1000;
@@ -114,13 +115,13 @@ public class Game extends Canvas implements Runnable, KeyListener {
     }
 
     public void keyTyped(KeyEvent e) {
-        
+
     }
 
     public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT){
+        if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
             player.right = true;
-        }else if(e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT){
+        } else if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT) {
             player.left = true;
         }
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -129,9 +130,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
     }
 
     public void keyReleased(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT){
+        if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
             player.right = false;
-        }else if(e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT){
+        } else if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT) {
             player.left = false;
         }
     }

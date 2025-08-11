@@ -3,6 +3,7 @@ package pong;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -16,31 +17,35 @@ public class Game extends Canvas implements Runnable, KeyListener {
     public static JFrame frame;
     private Thread thread;
     private boolean isRunning = true;
-    public static final int WIDTH = 240;
-    public static final int HEIGHT = 160;
-    public static final int SCALE = 3;
+    protected static final int WIDTH = 240;
+    protected static final int HEIGHT = 160;
+    private static final int SCALE = 3;
 
-    public BufferedImage layer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+    protected BufferedImage layer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 
-    public static Player player;
-    public static Enemy enemy;
-    public static Ball ball;
+    protected static Player player;
+    protected static Enemy enemy;
+    protected static Ball ball;
+
+    protected static int enemyPoints = 0;
+    protected static int playerPoints = 0;
 
     public Game() {
         this.setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
         this.addKeyListener(this);
+        initFrame();
         player = new Player(100, HEIGHT - 10);
         enemy = new Enemy(100, 0);
         ball = new Ball(100, HEIGHT / 2 - 1);
     }
 
-    public synchronized void start() {
+    private synchronized void start() {
         thread = new Thread(this);
         isRunning = true;
         thread.start();
     }
 
-    public synchronized void stop() {
+    private synchronized void stop() {
         isRunning = false;
         try {
             thread.join();
@@ -49,26 +54,29 @@ public class Game extends Canvas implements Runnable, KeyListener {
         }
     }
 
-    public static void main(String[] args) {
-        Game game = new Game();
-
-        frame = new JFrame("Pong");
-        frame.add(game);
+    private void initFrame(){
+        frame = new JFrame();
+        frame.setTitle("Pong");
+        frame.add(this);
         frame.setResizable(false);
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        Game game = new Game();
         game.start();
     }
 
-    public void tick() {
+    private void tick() {
         player.tick();
         enemy.tick();
         ball.tick();
     }
 
-    public void render() {
+    private void render() {
         BufferStrategy bs = this.getBufferStrategy();
         if (bs == null) {
             this.createBufferStrategy(3);
@@ -81,6 +89,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
         player.render(g);
         enemy.render(g);
         ball.render(g);
+
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 10));
+        g.drawString(String.valueOf(playerPoints),7, HEIGHT - 20);
+        g.drawString(String.valueOf(enemyPoints),7, 20);
 
         g.dispose();
         g = bs.getDrawGraphics();
